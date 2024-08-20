@@ -54,6 +54,7 @@ export async function signup(req, res) {
             password:""
         }})
     } catch (error) {
+        //failure: 500 is for server problem and 400 is for client problem (400, 404, 500)
         console.log("Error in signup controller ", error.message)
         res.status(500).json({ success: false, message: "Internal server error" })
     }
@@ -74,6 +75,7 @@ export async function login(req, res) {
             return res.status(400).json({ success: false, message: "Invalid credentials" });
         }
 
+        //200 is for success (200, 201, 204)
         generateTokenAndSetCookie(user._id, res);
         res.status(200).json({ success: true, user: {
             ...user._doc,
