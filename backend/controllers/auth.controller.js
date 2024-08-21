@@ -30,11 +30,11 @@ export async function signup(req, res) {
 			return res.status(400).json({ success: false, message: "Username already exists" });
 		}
 
-        const PROFILE_PICS = ["/avatar1.png", "/avatar2.png", "/avatar3.png"];
+        const PROFILE_PICS = ["/avatar1.png", "/avatar2.png", "/avatar3.png"]; // [0, 1, 2]
 
-		const image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
+		const image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)]; // Math.floor(Math.random() * PROFILE_PICS.length) => [0, 1, 2]
 
-        // 123456 => %$!"?=ü$
+        // 123456 => %$!"?=ü$uv$!
         const salt = await bcryptjs.genSalt(10);
 		const hashedPassword = await bcryptjs.hash(password, salt);
 
