@@ -17,12 +17,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "lucide-react": "^0.429.0",
-    "mongoose": "^8.5.3",
-    "react-hot-toast": "^2.4.1",
-    "react-player": "^2.16.0",
-    "react-router-dom": "^6.26.1",
-    "zustand": "^4.5.5"
+    "mongoose": "^8.5.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
