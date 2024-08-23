@@ -1,8 +1,7 @@
-import React from 'react'
 
 const HomePage = () => {
   return (
-    <div>HomePage</div>
+    <div className='hero-bg h-screen' >HomePage</div>
   )
 }
 
