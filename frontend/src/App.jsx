@@ -3,8 +3,13 @@ import HomePage from './pages/home/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Footer from './components/Footer';
-function App() {
+import { Toaster } from 'react-hot-toast';
+import { useAuthStore } from './store/authUser';
 
+
+function App() {
+  const { user, isCheckingAuth } = useAuthStore();
+  console.log("auth user is here", user, isCheckingAuth);
   return (
     <>
     <Routes>
@@ -13,6 +18,7 @@ function App() {
       <Route path="/signup" element={<SignupPage />} />
     </Routes>
     <Footer />
+    <Toaster />
     </>
   );
 }
