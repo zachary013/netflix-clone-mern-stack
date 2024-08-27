@@ -36,7 +36,7 @@ export async function getMovieTrailers(req, res) {
 
 //Get movie details and display them in a dynamic way
 export async function getMovieDetails(req, res) {
-    const { id } = req.params;
+    const { id } = req.params; // /:id/details
     try {
         const data = await fetchFromTMDB(`https://api.themoviedb.org/3/movie/${id}?language=en-US`);
         res.status(200).json({ success: true, details: data });
