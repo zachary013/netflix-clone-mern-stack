@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+
+# Build output
+build/
+dist/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE or editor specific files
+.vscode/
+.idea/
+
+# NPM cache
+.npm/
+
+# Yarn cache
+.yarn/
+
+# Testing coverage reports
+coverage/
+
+# PM2 logs (if using PM2 for process management)
+pids/
+*.pid
+*.pid.lock
