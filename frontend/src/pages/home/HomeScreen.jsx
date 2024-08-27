@@ -2,16 +2,32 @@ import Navbar from '../../components/Navbar';
 import { Link } from 'react-router-dom';
 import { Play, Info } from 'lucide-react';
 import useGetTrendingContent from '../../hooks/useGetTrendingContent';
+import { useContentStore } from "../../store/content";
+import { ORIGINAL_IMG_BASE_URL, MOVIE_CATEGORIES, TV_CATEGORIES } from '../../utils/constants';
+import ContentSlider from "../../components/ContentSlider";
 
+
+//?Authenticated User
 const HomeScreen = () => {
   const { trendingContent } = useGetTrendingContent();
-  console.log("trendingContent: ", trendingContent);
+  const { contentType } = useContentStore();
+  const [imgLoading, setImgLoading] = useState(true);
+
+
+  if (!trendingContent) return (
+    <div className='h-screen text-white relative'>
+      <Navbar />
+      <div className='absolute top-0 left-0 w-full h-full bg-black/70 flex justify-center items-center -z-10 shimmer' />
+    </div>
+  )
+
+
   return (
     <>
       <div className="relative h-screen text-white">
         <Navbar />
 
-        <img src="/dead-pool.jpg" alt="hero-img" className='absolute top-0 left-0 w-full h-full object-cover -z-50' />
+        <img src={ORIGINAL_IMG_BASE_URL + trendingContent?.backdrop_path} alt="hero-img" className='absolute top-0 left-0 w-full h-full object-cover -z-50' />
 
         <div className="absolute top-0 left-0 w-full h-full bg-black/50 -z-50" aria-hidden="true" />
 
@@ -20,26 +36,28 @@ const HomeScreen = () => {
           <div className='max-w-2xl'>
             {/* Movie title*/}
             <h1 className='mt-4 text-6xl font-extrabold text-balance'>
-              Deadpool
+              {trendingContent?.title || trendingContent?.name}
             </h1>
-            {/* Release year | age category */}
-            <p className='mt-2 text-lg'>
-              2024 | 18+
-            </p>
+            {/* Release date for movies | First air date for tv shows */}
+            {trendingContent?.release_date?.split("-")[0] ||
+              trendingContent?.first_air_date.split("-")[0]}{" "}
+            | {trendingContent?.adult ? "18+" : "PG-13"}
 
             <p className="mt-4 text-lg">
-              Deadpool" is characterized by its fast-paced action, witty dialogue, and meta-commentary on superhero tropes. The film was both a critical and commercial success, praised for its fresh take on the genre, Reynolds' charismatic performance, and its ability to balance humor with heartfelt moments. It also set the stage for a successful sequel and solidified Deadpool's place as a fan-favorite character in the Marvel Universe
+              {trendingContent?.overview.length > 200
+                ? trendingContent?.overview.slice(0, 200) + "..."
+                : trendingContent?.overview}
             </p>
             <div className='flex mt-8 '>
               {/* Play button */}
-              <Link to="/watch/1234" className='bg-white hover:bg-white/70 text-black font-bold py-2 px-4 rounded mr-4 flex
+              <Link to={`/watch/${trendingContent?.id}`} className='bg-white hover:bg-white/70 text-black font-bold py-2 px-4 rounded mr-4 flex
 							 items-center'>
                 <Play className='size-6 mr-2 fill-black' />
                 Play
               </Link>
 
               {/* Infos button */}
-              <Link to="/watch/123" className='bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded flex items-center'>
+              <Link to={`/watch/${trendingContent?.id}`} className='bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded flex items-center'>
                 <Info className='size-6 mr-2' />
                 More Info
               </Link>
@@ -49,13 +67,13 @@ const HomeScreen = () => {
 
       </div>
 
-
-
-      <div>
-
+      <div className='flex flex-col gap-10 bg-black py-10'>
+        {contentType === "movie"
+          ? MOVIE_CATEGORIES.map((category) => <ContentSlider key={category} category={category} />)
+          : TV_CATEGORIES.map((category) => <ContentSlider key={category} category={category} />)}
       </div>
     </>
   )
 }
 
-export default HomeScreen
+export default HomeScreen;

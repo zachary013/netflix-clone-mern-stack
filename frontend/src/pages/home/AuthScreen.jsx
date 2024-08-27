@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
-
+//User not authenticated
 const AuthScreen = () => {
     const [email, setEmail] = useState("");
     const navigate = useNavigate();
