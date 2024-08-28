@@ -5,15 +5,15 @@ import useGetTrendingContent from '../../hooks/useGetTrendingContent';
 import { useContentStore } from "../../store/content";
 import { ORIGINAL_IMG_BASE_URL, MOVIE_CATEGORIES, TV_CATEGORIES } from '../../utils/constants';
 import ContentSlider from "../../components/ContentSlider";
+import { useState } from 'react';
 
-
-//?Authenticated User
+//? Authenticated User
 const HomeScreen = () => {
-  const { trendingContent } = useGetTrendingContent();
-  const { contentType } = useContentStore();
+  const { trendingContent } = useGetTrendingContent(); //? Fetch trending content
+  const { contentType } = useContentStore();  //? Get content type: movie or tv show
   const [imgLoading, setImgLoading] = useState(true);
 
-
+  //todo Add a loading spinner
   if (!trendingContent) return (
     <div className='h-screen text-white relative'>
       <Navbar />
@@ -27,7 +27,18 @@ const HomeScreen = () => {
       <div className="relative h-screen text-white">
         <Navbar />
 
-        <img src={ORIGINAL_IMG_BASE_URL + trendingContent?.backdrop_path} alt="hero-img" className='absolute top-0 left-0 w-full h-full object-cover -z-50' />
+        {imgLoading && (
+          <div className='absolute top-0 left-0 w-full h-full bg-black/70 flex items-center justify-center shimmer -z-10' />
+        )}
+
+        <img
+          src={ORIGINAL_IMG_BASE_URL + trendingContent?.backdrop_path}
+          alt='treending content background'
+          className='absolute top-0 left-0 w-full h-full object-cover -z-50'
+          onLoad={() => {
+            setImgLoading(false);
+          }}
+        />
 
         <div className="absolute top-0 left-0 w-full h-full bg-black/50 -z-50" aria-hidden="true" />
 
@@ -71,7 +82,7 @@ const HomeScreen = () => {
         {contentType === "movie"
           ? MOVIE_CATEGORIES.map((category) => <ContentSlider key={category} category={category} />)
           : TV_CATEGORIES.map((category) => <ContentSlider key={category} category={category} />)}
-      </div>
+      </div> 
     </>
   )
 }

@@ -8,6 +8,7 @@ const useGetTrendingContent = () => {
 
     useEffect(() => {
         const getTrendingContent = async () => {
+            //? content type is either movie or tv
             const res = await axios.get(`/api/${contentType}/trending`);
             setTrendingContent(res.data.content);
         };
