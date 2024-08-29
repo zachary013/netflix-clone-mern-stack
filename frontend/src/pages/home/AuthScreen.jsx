@@ -1,16 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Languages, ChevronDown } from "lucide-react";
 
 //User not authenticated
 const AuthScreen = () => {
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState(""); //? Email state
+    const [showLanguages, setShowLanguages] = useState(false);
     const navigate = useNavigate();
+    const dropdownRef = useRef(null);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
         navigate("/signup?email=" + email);
     }
+
+    const handleLanguageChange = (lang) => {
+        setShowLanguages(false);
+        console.log("Selected language:", lang);
+        // Logic to translate page content goes here
+    };
+
+    // Handle clicks outside the dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowLanguages(false);
+            }
+        };
+
+        // Add event listener when the dropdown is open
+        if (showLanguages) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        // Clean up the event listener when the dropdown is closed
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showLanguages]);
+
     return (
         <div className="hero-bg relative">
             {/* Navbar */}
@@ -20,9 +48,49 @@ const AuthScreen = () => {
                     alt="Netflix Logo"
                     className="w-32 md:w-52"
                 />
-                <Link to={"/login"} className="text-white bg-red-600 py-2 px-4 rounded">
-                    Sign In
-                </Link>
+                <div className="relative flex gap-3">
+                    <button
+                        onClick={() => setShowLanguages(!showLanguages)}
+                        className="text-white border border-white bg-transparent hover:bg-white/20 py-2 px-3 rounded flex items-center gap-1.5"
+                    >
+                        <Languages className="w-5 h-5" />
+                        Translate
+                        <ChevronDown className="w-4 h-4" />
+                    </button>
+                    {showLanguages && (
+                        <div ref={dropdownRef} className="absolute top-full mt-2 bg-[#e5e5e5] text-black rounded shadow-lg z-10 w-40">
+                            <ul>
+                                <li
+                                    className="hover:bg-[#d1d1d1] cursor-pointer px-4 py-2"
+                                    onClick={() => handleLanguageChange("en")}
+                                >
+                                    English
+                                </li>
+                                <li
+                                    className="hover:bg-[#d1d1d1] cursor-pointer px-4 py-2"
+                                    onClick={() => handleLanguageChange("fr")}
+                                >
+                                    French
+                                </li>
+                                <li
+                                    className="hover:bg-[#d1d1d1] cursor-pointer px-4 py-2"
+                                    onClick={() => handleLanguageChange("es")}
+                                >
+                                    Spanish
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+
+
+                    <Link
+                        to={"/login"}
+                        className="text-white bg-red-600 py-2 px-4 rounded"
+                    >
+                        Sign In
+                    </Link>
+                </div>
+
             </header>
 
             {/* Hero section */}
