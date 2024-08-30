@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useState, useRef, useEffect } from 'react';
+import ReactPlayer from "react-player";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useContentStore } from '../store/content';
 import Navbar from "../components/Navbar";
@@ -67,6 +68,20 @@ const WatchPage = () => {
     getContentDetails();
   }, [contentType, id]);
 
+  const handleNext = () => {
+		if (currentTrailerIdx < trailers.length - 1) setCurrentTrailerIdx(currentTrailerIdx + 1);
+	};
+	const handlePrev = () => {
+		if (currentTrailerIdx > 0) setCurrentTrailerIdx(currentTrailerIdx - 1);
+	};
+
+	// const scrollLeft = () => {
+	// 	if (sliderRef.current) sliderRef.current.scrollBy({ left: -sliderRef.current.offsetWidth, behavior: "smooth" });
+	// };
+	// const scrollRight = () => {
+	// 	if (sliderRef.current) sliderRef.current.scrollBy({ left: sliderRef.current.offsetWidth, behavior: "smooth" });
+	// };
+
   console.log("Trailers : ", trailers);
   console.log("Similar Content : ", similarContent);
   console.log("Content Details : ", content);
@@ -100,6 +115,29 @@ const WatchPage = () => {
             </button>
           </div>
         )}
+
+        <div className='aspect-video mb-8 p-2 sm:px-10 md:px-32'>
+					{trailers.length > 0 && (
+						<ReactPlayer
+							controls={true}
+							width={"100%"}
+							height={"70vh"}
+							className='mx-auto overflow-hidden rounded-lg'
+							url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
+						/>
+					)}
+
+					{trailers?.length === 0 && (
+						<h2 className='text-xl text-center mt-5'>
+							No trailers available for{" "}
+							<span className='font-bold text-red-600'>{content?.title || content?.name}</span> 😥
+						</h2>
+					)}
+				</div>
+
+        {/* movie details */}
+				
+
       </div>
     </div>
   )
