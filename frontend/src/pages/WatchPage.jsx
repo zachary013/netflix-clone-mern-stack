@@ -7,6 +7,13 @@ import Navbar from "../components/Navbar";
 import axios from 'axios';
 import { ORIGINAL_IMG_BASE_URL, SMALL_IMG_BASE_URL } from "../utils/constants";
 
+function formatReleaseDate(date) {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
 
 
 const WatchPage = () => {
@@ -32,14 +39,14 @@ const WatchPage = () => {
       }
     }
     getTrailers();
-  }, [contentType, id]);
+  }, [contentType, id]); //?we run this effect whenever the contentType or id changes
 
   //* fetch similar content
   useEffect(() => {
     const getSimilarContent = async () => {
       try {
         const res = await axios.get(`/api/${contentType}/${id}/similar`);
-        setSimilarContent(res.data.similar);
+        setSimilarContent(res.data.content);
       } catch (error) {
         if (error.message.includes("404")) {
           setSimilarContent([]);
@@ -69,18 +76,18 @@ const WatchPage = () => {
   }, [contentType, id]);
 
   const handleNext = () => {
-		if (currentTrailerIdx < trailers.length - 1) setCurrentTrailerIdx(currentTrailerIdx + 1);
-	};
-	const handlePrev = () => {
-		if (currentTrailerIdx > 0) setCurrentTrailerIdx(currentTrailerIdx - 1);
-	};
+    if (currentTrailerIdx < trailers.length - 1) setCurrentTrailerIdx(currentTrailerIdx + 1);
+  };
+  const handlePrev = () => {
+    if (currentTrailerIdx > 0) setCurrentTrailerIdx(currentTrailerIdx - 1);
+  };
 
-	// const scrollLeft = () => {
-	// 	if (sliderRef.current) sliderRef.current.scrollBy({ left: -sliderRef.current.offsetWidth, behavior: "smooth" });
-	// };
-	// const scrollRight = () => {
-	// 	if (sliderRef.current) sliderRef.current.scrollBy({ left: sliderRef.current.offsetWidth, behavior: "smooth" });
-	// };
+  // const scrollLeft = () => {
+  // 	if (sliderRef.current) sliderRef.current.scrollBy({ left: -sliderRef.current.offsetWidth, behavior: "smooth" });
+  // };
+  // const scrollRight = () => {
+  // 	if (sliderRef.current) sliderRef.current.scrollBy({ left: sliderRef.current.offsetWidth, behavior: "smooth" });
+  // };
 
   console.log("Trailers : ", trailers);
   console.log("Similar Content : ", similarContent);
@@ -88,7 +95,8 @@ const WatchPage = () => {
 
   return (
     <div className='bg-black min-h-screen text-white'>
-      <div className='mx-auto container px-4 py-8 -full'>
+      <div className='mx-auto container px-4 py-8 h-full'>
+        {/* Reuse the Navbar comp Navbar */}
         <Navbar />
 
         {trailers.length > 0 && (
@@ -103,6 +111,8 @@ const WatchPage = () => {
             >
               <ChevronLeft size={24} />
             </button>
+
+
             <button
               className={`
 							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${currentTrailerIdx === trailers.length - 1 ? "opacity-50 cursor-not-allowed " : ""
@@ -117,26 +127,42 @@ const WatchPage = () => {
         )}
 
         <div className='aspect-video mb-8 p-2 sm:px-10 md:px-32'>
-					{trailers.length > 0 && (
-						<ReactPlayer
-							controls={true}
-							width={"100%"}
-							height={"70vh"}
-							className='mx-auto overflow-hidden rounded-lg'
-							url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
-						/>
-					)}
+          {trailers.length > 0 && (
+            <ReactPlayer
+              controls={true}
+              width={"100%"}
+              height={"70vh"}
+              className='mx-auto overflow-hidden rounded-lg'
+              url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
+            />
+          )}
 
-					{trailers?.length === 0 && (
-						<h2 className='text-xl text-center mt-5'>
-							No trailers available for{" "}
-							<span className='font-bold text-red-600'>{content?.title || content?.name}</span> 😥
-						</h2>
-					)}
-				</div>
+          {trailers?.length === 0 && (
+            <h2 className='text-xl text-center mt-5'>
+              No trailers available for{" "}
+              <span className='font-bold text-red-600'>{content?.title || content?.name}</span> 😥
+            </h2>
+          )}
+        </div>
 
         {/* movie details */}
-				
+        <div className="flex flex-col md:flex-row items-center justify-between gap-20 max-w-6xl mx-auto">
+          <div className="mb-4 md:mb-0">
+            <h2 className="text-5xl font-bold text-balance">{content?.title || content?.name}</h2>
+
+            <p className="mt-2 text-lg">
+              {formatReleaseDate(content?.release_date || content?.first_air_date)} | {" "}
+              {content?.adult ? (
+                <span className="text-red-600">18+</span>
+               ) : (
+                  <span className="text-green-600">PG-13</span>
+                )}{" "}
+            </p>
+            <p className="mt-4 text-lg">{content?.overview}</p>
+          </div>
+          <img src={ORIGINAL_IMG_BASE_URL + content?.poster_path} alt="Poster image" className="max-h-[600px] rounded-md"/>
+        </div>
+
 
       </div>
     </div>
