@@ -15,11 +15,14 @@ export async function searchActor(req, res) {
         await User.findByIdAndUpdate(req.user._id, {
             $push: {
                 searchHistory: {
-                    id: response.results[0].id,
-                    image: response.results[0].profile_path,
-                    title: response.results[0].name,
-                    searchType: "actor",
-                    createdAt: new Date()
+                    $each: [{
+                        id: response.results[0].id,
+                        image: response.results[0].profile_path,
+                        title: response.results[0].name,
+                        searchType: "actor",
+                        createdAt: new Date()
+                    }],
+                    $position: 0
                 }
             }
         });
@@ -47,13 +50,16 @@ export async function searchMovie(req, res) {
         await User.findByIdAndUpdate(req.user._id, {
             $push: {
                 searchHistory: {
-                    id: response.results[0].id,
-                    image: response.results[0].poster_path,
-                    title: response.results[0].title,
-                    searchType: "movie",
-                    createdAt: new Date(),
-                },
-            },
+                    $each: [{
+                        id: response.results[0].id,
+                        image: response.results[0].poster_path,
+                        title: response.results[0].title,
+                        searchType: "movie",
+                        createdAt: new Date(),
+                    }],
+                    $position: 0
+                }
+            }
         });
         res.status(200).json({ success: true, content: response.results });
     } catch (error) {
@@ -78,13 +84,16 @@ export async function searchTv(req, res) {
         await User.findByIdAndUpdate(req.user._id, {
             $push: {
                 searchHistory: {
-                    id: response.results[0].id,
-                    image: response.results[0].poster_path,
-                    title: response.results[0].name,
-                    searchType: "tv",
-                    createdAt: new Date(),
-                },
-            },
+                    $each: [{
+                        id: response.results[0].id,
+                        image: response.results[0].poster_path,
+                        title: response.results[0].name,
+                        searchType: "tv",
+                        createdAt: new Date(),
+                    }],
+                    $position: 0
+                }
+            }
         });
         res.json({ success: true, content: response.results });
     } catch (error) {
