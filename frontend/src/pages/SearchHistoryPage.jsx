@@ -24,6 +24,7 @@ function formatDate(dateString) {
 const SearchHistoryPage = () => {
   const [searchHistory, setSearchHistory] = useState([]);
 
+  //? Fetch search history from the server
   useEffect(() => {
     const getSearchHistory = async () => {
       try {
@@ -79,6 +80,7 @@ const SearchHistoryPage = () => {
                 <span className='text-gray-400 text-sm'>{formatDate(entry.createdAt)}</span>
               </div>
 
+              {/* Search type color*/}
               <span
                 className={`py-1 px-3 min-w-20 text-center rounded-full text-sm  ml-auto ${entry.searchType === "movie"
                     ? "bg-red-600"
